@@ -1,6 +1,9 @@
 const express = require('express')
 const session = require('express-session')
 const TwitterLogin = require('twitter-login')
+const config = require('./config')
+
+require('dotenv').config()
 
 const app = express()
 const port = 9000
@@ -13,11 +16,11 @@ const sessionConfig = {
 
 app.use(session(sessionConfig))
 
-// const twitter = new TwitterLogin({
-//     consumerKey: '<your api key>',
-//     consumerSecret:'<your api secret key>',
-//     callbackUrl: `http://localhost:${port}/twitter/auth/userToken`,
-//   })
+const twitter = new TwitterLogin({
+  consumerKey: config.consumerKey,
+  consumerSecret: config.consumerSecret,
+  callbackUrl: `http://localhost:${port}/twitter/auth/userToken`,
+})
 
 app.get('/twitter/auth', async (req, res) => {
   try {
@@ -52,6 +55,7 @@ app.get('/twitter/auth/userToken', async (req, res) => {
     res.redirect('/')
   } catch (err) {
     // Handle Error here
+    console.log(err)
     res.send('Twitter login error.')
   }
 })
